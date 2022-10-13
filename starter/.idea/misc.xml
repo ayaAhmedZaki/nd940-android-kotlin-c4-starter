@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/GitHub/nd940-android-kotlin-c4-starter/starter/app/src/main/res/drawable/ic_location.xml" value="0.171" />
+        <entry key="..\:/GitHub/nd940-android-kotlin-c4-starter/starter/app/src/main/res/layout/activity_authentication.xml" value="0.16893115942028986" />
+        <entry key="..\:/GitHub/nd940-android-kotlin-c4-starter/starter/app/src/main/res/layout/activity_reminder_description.xml" value="0.16893115942028986" />
+        <entry key="..\:/GitHub/nd940-android-kotlin-c4-starter/starter/app/src/main/res/layout/activity_reminders.xml" value="0.16893115942028986" />
+        <entry key="..\:/GitHub/nd940-android-kotlin-c4-starter/starter/app/src/main/res/layout/fragment_reminders.xml" value="0.14175724637681159" />
+        <entry key="..\:/GitHub/nd940-android-kotlin-c4-starter/starter/app/src/main/res/layout/fragment_save_reminder.xml" value="0.13405797101449277" />
+        <entry key="..\:/GitHub/nd940-android-kotlin-c4-starter/starter/app/src/main/res/layout/fragment_select_location.xml" value="0.16893115942028986" />
+        <entry key="..\:/GitHub/nd940-android-kotlin-c4-starter/starter/app/src/main/res/layout/it_reminder.xml" value="0.16893115942028986" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>
