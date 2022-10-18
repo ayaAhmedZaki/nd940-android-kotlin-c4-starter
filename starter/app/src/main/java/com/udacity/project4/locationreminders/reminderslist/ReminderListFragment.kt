@@ -75,12 +75,14 @@ class ReminderListFragment : BaseFragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.logout -> {
+                //update logout click to solve the bug
                 AuthUI.getInstance().signOut(requireContext())
-                val intent = Intent(requireContext(), AuthenticationActivity::class.java)
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                startActivity(intent)
-               // activity?.finish()
+                    .addOnCompleteListener {
+                        val intent = Intent(requireContext(), AuthenticationActivity::class.java)
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                        startActivity(intent)
+                    }
             }
         }
         return super.onOptionsItemSelected(item)

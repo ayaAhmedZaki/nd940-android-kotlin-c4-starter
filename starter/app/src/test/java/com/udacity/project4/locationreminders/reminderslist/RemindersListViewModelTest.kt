@@ -22,9 +22,8 @@ class RemindersListViewModelTest {
     @get:Rule
     var mainCoroutineRule = MainCoroutineRule()
 
-    private lateinit var fakeDataSource: FakeDataSource
     private lateinit var remindersListViewModel: RemindersListViewModel
-    private lateinit var reminderList: MutableList<ReminderDTO>;
+    private lateinit var reminderList: MutableList<ReminderDTO>
 
     @Before
     fun setupViewModel() {
@@ -43,9 +42,8 @@ class RemindersListViewModelTest {
 
     @Test
     fun check_loading() {
-        fakeDataSource = FakeDataSource(reminderList)
         remindersListViewModel =
-            RemindersListViewModel(ApplicationProvider.getApplicationContext(), fakeDataSource)
+            RemindersListViewModel(ApplicationProvider.getApplicationContext(), FakeDataSource(reminderList))
         mainCoroutineRule.pauseDispatcher()
         remindersListViewModel.loadReminders()
         Assert.assertThat(
@@ -56,9 +54,8 @@ class RemindersListViewModelTest {
 
     @Test
     fun shouldReturnError() {
-        fakeDataSource = FakeDataSource(null)
         remindersListViewModel =
-            RemindersListViewModel(ApplicationProvider.getApplicationContext(), fakeDataSource)
+            RemindersListViewModel(ApplicationProvider.getApplicationContext(), FakeDataSource(null))
         remindersListViewModel.loadReminders()
         Assert.assertThat(
             remindersListViewModel.showSnackBar.getOrAwaitValue(),

@@ -19,7 +19,6 @@ import android.provider.Settings
 import android.util.Log
 import android.view.*
 import androidx.core.app.ActivityCompat
-import androidx.core.app.ActivityCompat.startIntentSenderForResult
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import com.google.android.gms.common.api.ResolvableApiException
@@ -258,10 +257,10 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
     }
 
 
-    override fun onResume() {
-        super.onResume()
-        enableMyLocation()
-    }
+//    override fun onResume() {
+//        super.onResume()
+//        enableMyLocation()
+//    }
 
     @SuppressLint("MissingPermission")
     private fun enableMyLocation() {
@@ -281,8 +280,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
 
         if (foregroundAndBackgroundLocationPermissionApproved()) {
             checkDeviceLocationSettings()
-        }
-        else {
+        } else {
             requestForegroundAndBackgroundLocationPermissions()
         }
     }
@@ -315,6 +313,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
     //    Requests ACCESS_FINE_LOCATION and (on Android 10+ (Q) ACCESS_BACKGROUND_LOCATION.
 //    This is where you will ask the user to grant location permissions
 //    @TargetApi(29)
+    @SuppressLint("MissingPermission")
     private fun requestForegroundAndBackgroundLocationPermissions() {
         if (foregroundAndBackgroundLocationPermissionApproved())
             return
@@ -331,13 +330,18 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
             else -> REQUEST_FOREGROUND_ONLY_PERMISSIONS_REQUEST_CODE
         }
 
+        //update requestPermissions from Fragment to can call onRequestPermissionsResult funtion
+
         //Request permissions passing in the current activity, the permissions array and the result code.
         Log.d(TAG, "Request foreground only location permission")
-        ActivityCompat.requestPermissions(
-            requireActivity(),
+        requestPermissions(
             permissionsArray,
             resultCode
         )
+
+
+
+
     }
 
 
@@ -359,15 +363,17 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
             if (exception is ResolvableApiException && resolve) {
                 try {
 
-                    startIntentSenderForResult(exception.resolution.intentSender,
+                    startIntentSenderForResult(
+                        exception.resolution.intentSender,
                         REQUEST_TURN_DEVICE_LOCATION_ON, null,
-                        0,0,0,null)
+                        0, 0, 0, null
+                    )
                 } catch (sendEx: IntentSender.SendIntentException) {
                     Log.d(TAG, "Error getting location settings resolution: " + sendEx.message)
                 }
             } else {
                 Snackbar.make(
-                    binding.root,
+                    binding.mapContainer,
                     R.string.location_required_error, Snackbar.LENGTH_INDEFINITE
                 ).setAction(android.R.string.ok) {
                     checkDeviceLocationSettings()
@@ -403,17 +409,18 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
         permissions: Array<String>,
         grantResults: IntArray
     ) {
-       // super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        Log.d(TAG, "onRequestPermissionsResult")
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (
             grantResults.isEmpty() ||
             grantResults[LOCATION_PERMISSION_INDEX] == PackageManager.PERMISSION_DENIED ||
             (requestCode == REQUEST_FOREGROUND_AND_BACKGROUND_PERMISSION_RESULT_CODE &&
                     grantResults[BACKGROUND_LOCATION_PERMISSION_INDEX] ==
-                    PackageManager.PERMISSION_DENIED))
-        {
+                    PackageManager.PERMISSION_DENIED)
+        ) {
             // Permission denied.
             Snackbar.make(
-                binding.root,
+                binding.mapContainer,
                 R.string.permission_denied_explanation, Snackbar.LENGTH_INDEFINITE
             )
                 .setAction(R.string.settings) {
@@ -427,7 +434,6 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
         } else {
             checkDeviceLocationSettings()
         }
-
 
 
 //        if (requestCode == REQUEST_LOCATION_PERMISSION) {
@@ -521,7 +527,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
         fusedLocationProviderClient.removeLocationUpdates(locationCallback)
     }
 
-    companion object{
+    companion object {
         private const val REQUEST_FOREGROUND_AND_BACKGROUND_PERMISSION_RESULT_CODE = 33
         private const val REQUEST_FOREGROUND_ONLY_PERMISSIONS_REQUEST_CODE = 34
         private const val REQUEST_TURN_DEVICE_LOCATION_ON = 29
