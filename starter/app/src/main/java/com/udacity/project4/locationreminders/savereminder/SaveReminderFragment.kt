@@ -41,12 +41,7 @@ class SaveReminderFragment : BaseFragment() {
     private lateinit var geofencingClient: GeofencingClient
     private val runningQOrLater =
         android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q
-
-
-
-    var finalLong = 0.0
-    var finalLat = 0.0
-
+    lateinit var reminderDataItem : ReminderDataItem
 
     // A PendingIntent for the Broadcast Receiver that handles geofence transitions.
     private val geofencePendingIntent: PendingIntent by lazy {
@@ -85,18 +80,16 @@ class SaveReminderFragment : BaseFragment() {
             val latitude = _viewModel.latitude.value
             val longitude = _viewModel.longitude.value
 
-
 //            TODO: use the user entered reminder details to:
 //             1) add a geofencing request
 //             2) save the reminder to the local db
             if (latitude != null && longitude != null){
-                finalLat = latitude
-                finalLong = longitude
+                reminderDataItem = ReminderDataItem(title , description , location , latitude , longitude)
                 checkPermissionsAndStartGeofencing()
-               // addGeofence(latitude, longitude)
+                _viewModel.validateAndSaveReminder(reminderDataItem)
+                // addGeofence(latitude, longitude)
             }
 
-            _viewModel.validateAndSaveReminder(ReminderDataItem(title , description , location , finalLat , finalLong))
 
             //add backToReminderList to observe when data is valid and save data we can navigate back to reminderList
             _viewModel.backToReminderList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
@@ -179,13 +172,11 @@ class SaveReminderFragment : BaseFragment() {
 
     @SuppressLint("MissingPermission")
     private fun addGeofence() {
-        val uniqueID = UUID.randomUUID().toString()
-
         val geofence = Geofence.Builder()
-            .setRequestId(uniqueID)
+            .setRequestId(reminderDataItem.id)
             .setCircularRegion(
-                finalLat,
-                finalLong,
+                reminderDataItem.latitude!!,
+                reminderDataItem.longitude!!,
                 GEOFENCE_RADIUS_IN_METERS
             )
             .setExpirationDuration(GEOFENCE_EXPIRATION_IN_MILLISECONDS)
